@@ -1,0 +1,68 @@
+---
+title: "Football(Soccer) Reference (FBref) Recommender System Analysis"
+author: "Pascal Hermann Kouogang Tafo"
+format: html
+editor: visual
+---
+
+## 1) Selection of Recommender System
+
+In this discussion, i chose to analyze the Football(Soccer) Reference platform **FBref.com** and specifically their "Player Comparison" and "Similar Players" engine. **FBref** is one of the most comprehensive soccer statistics websites, powered by **Opta data** from **Stats Perform**. Their recommender system identifies players with similar statistical profiles across various soccer leagues, which is a primary tool used by fans, scouts, and analysts to find "undervalued" talent or replacements for departing stars.
+
+------------------------------------------------------------------------
+
+## 2) Let's Perform the Scenario Design Analysis
+
+As described below, Scenario design involves identifying the **three question framework**: "Who," "What ," and "Why or How" of a recommendation. In the context of building a recommender system for a soccer analysis platform like FBref, It is essential to perform the scenario design for both **the Organization** (FBref/Sports Reference) and **the User** (Fans/Scouts) is essential because their definitions of **"success"** are often fundamentally different and occasionally in conflict.
+
+### A. Organization Perspective (FBref)
+
+-   **Target User:** Advertisers and B2B data partners.
+-   **Goal:** Increase "stickiness" and page views.
+-   **Recommendation Value:** By showing similar players, the site encourages the user to click through multiple player profiles. This increases ad impressions and demonstrates the depth of their database to potential enterprise API customers.
+-   **Key Metric:** Average session duration and Click-Through Rate (CTR) on "Similar Players" lists.
+
+### B. User Perspective (The Customer)
+
+-   **Target User:** Soccer fans, fantasy managers, or professional scouts.
+-   **Goal:** Discover new players or validate scouting reports.
+-   **Scenario:** A user looks up *Jude Bellingham* and wants to find younger, cheaper alternatives for a Football Manager save or a scouting report.
+-   **Recommendation Value:** Saving time by filtering thousands of players down to the top 10 most statistically similar profiles.
+
+------------------------------------------------------------------------
+
+## 3. Reverse Engineering the System
+
+Based on the interface and available technical documentation regarding their data partner (Opta), we can infer the following about FBref's recommendation engine:
+
+1.  **Content-Based Filtering (Statistical Profile):**
+    -   Unlike Netflix or Amazon, which use Collaborative Filtering (users who liked X also liked Y), FBref uses **Content-Based Filtering**.
+    -   The "features" are the player's percentile ranks in specific categories (e.g., Progressive Carries, Expected Assists (xA), Tackles, Aerial Wins).
+    -   They likely use a **Cosine Similarity** or **Euclidean Distance** algorithm on a normalized vector of stats to find the "nearest neighbors" in the high-dimensional data space.
+2.  **Segmentation by Position:**
+    -   The system first filters by "Position Group" (e.g., Fullbacks, Attacking Midfielders). It does not compare a Center Back to a Striker, regardless of how "efficient" their passing stats might both be.
+3.  **Data Normalization:**
+    -   Stats are analyzed "Per 90 Minutes" to ensure players with fewer appearances aren't unfairly penalized or inflated, though a minimum minute threshold is likely applied to maintain data integrity.
+
+------------------------------------------------------------------------
+
+## 4. Recommendations for Improvement
+
+While FBref is industry-standard, its recommender system could be improved in the following ways:
+
+### I. Market Value/Age Weighting
+
+-   **Issue:** It often recommends players of similar quality who are equally expensive or older.
+-   **Improvement:** Add a "Smart Scouting" toggle that allows users to weight recommendations toward younger players or those in lower-tier leagues (e.g., "Find me players similar to 34 years old Kevin De Bruyne with a great passing and dribbling skills but under 23 years old in the Eredivisie").
+
+### II. Contextual/Tactical Filters
+
+-   **Issue:** The system is purely statistical and ignores team style.
+-   **Improvement:** Integrate **"Team Style"** similarity. In fact, a player might have similar stats to the Liverpool star right winger **Mohamed Salah**, but if they play in a low-block defensive system, they might not be a good recommendation for a high-pressing team.
+
+### III. Hybrid Collaborative Filtering
+
+-   **Issue:** It ignores user behavior.
+-   **Improvement:** Incorporate "Users also viewed" data. If professional scouts frequently jump from Player A's profile to Player B's, there may be a non-statistical link (e.g., similar physical build or injury history) that the data currently misses.
+
+------------------------------------------------------------------------
